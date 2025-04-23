@@ -1,3 +1,4 @@
+type TExercise = { id: number; name: string; exercises: number };
 const Header = (props: { name: string }) => {
   return <h1>{props.name}</h1>;
 };
@@ -10,58 +11,78 @@ const Part = ({ name, exercises }: { name: string; exercises: number }) => {
   );
 };
 
-const Content = ({
-  exercises,
-}: {
-  exercises: { name: string; exercises: number }[];
-}) => {
-  return (
-    <>
-      <Part name={exercises[0].name} exercises={exercises[0].exercises} />
-      <Part name={exercises[1].name} exercises={exercises[1].exercises} />
-      <Part name={exercises[2].name} exercises={exercises[2].exercises} />
-    </>
-  );
+const Content = ({ exercises }: { exercises: TExercise[] }) => {
+  return exercises.map((ex) => (
+    <Part key={ex.id} name={ex.name} exercises={ex.exercises} />
+  ));
 };
 
 const Total = ({ total }: { total: number }) => {
-  return <p>Number of exercises {total}</p>;
+  return (
+    <p>
+      <b>Number of exercises {total}</b>
+    </p>
+  );
 };
 
 function App() {
-  const course = {
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10,
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7,
-      },
-      {
-        name: 'State of a component',
-        exercises: 14,
-      },
-    ],
-  };
+  const courses: { id: number; name: string; parts: TExercise[] }[] = [
+    {
+      name: 'Half Stack application development',
+      id: 1,
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1,
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2,
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3,
+        },
+        {
+          name: 'Redux',
+          exercises: 11,
+          id: 4,
+        },
+      ],
+    },
+    {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1,
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2,
+        },
+      ],
+    },
+  ];
 
-  return (
-    <>
-      <div>
-        <Header name={course.name} />
-        <Content exercises={[...course.parts]} />
+  return courses.map(
+    (course: { id: number; name: string; parts: TExercise[] }) => {
+      const total = course.parts.reduce((acc, part) => acc + part.exercises, 0);
+      return (
+        <div key={course.id}>
+          <Header name={course.name} />
+          <Content exercises={[...course.parts]} />
 
-        <Total
-          total={
-            course.parts[0].exercises +
-            course.parts[1].exercises +
-            course.parts[2].exercises
-          }
-        />
-      </div>
-    </>
+          <Total total={total} />
+        </div>
+      );
+    }
   );
 }
 
